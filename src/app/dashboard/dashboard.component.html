@@ -1,0 +1,7 @@
+<div style="text-align: center;width:100%">
+  <div *ngFor="let room of rooms" class="dashboardDiv">
+    <room [details]="room" (click)="goToRoom(room.id)"></room>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,41 @@
+<!-- <div class="roomDiv">
+  <p>{{roomDetails.id}}</p>
+  <p>{{roomDetails.name}}</p>
+  <p>Status: {{roomDetails.status}}</p>
+</div> -->
+<div style="height:100%;width:100%;display: inline-block;">
+  <h1 style="width:50%">
+    Schedule your meeting
+  </h1>
+
+  <form #f="ngForm" ngNativeValidate (ngSubmit)="scheduleMeeting()">
+    <p *ngIf="meetingTo.dirty && meetingTo.invalid">
+      endTime is required!
+    </p>
+    <p *ngIf="meetingFromTime.dirty && meetingFromTime.invalid">
+      startTime  is required!
+    </p>
+    Start Time: <input type="datetime-local" required minlength="5" #meetingFromTime="ngModel" [(ngModel)]="meetingDetails.startTime" name="ptitle" class="form-control" />
+    End Time: <input type="datetime-local" required #meetingTo="ngModel" name="price" [(ngModel)]="meetingDetails.endTime" class="form-control" />
+    Agenda: <input type="text"  #meetingToTime="ngModel" name="rating" [(ngModel)]="meetingDetails.agenda" class="form-control" />
+    Booked By: <input type="text" required #meetingToTime="ngModel" name="likes" [(ngModel)]="meetingDetails.bookedBy" class="form-control" />
+    <br/>
+    <button [disabled]="f.invalid" class="btn btn-success btn-lg"> Schedule </button>
+  </form>
+  
+    
+    <h1>
+      Scheduled meetings
+    </h1>
+    <ul *ngIf="roomDetails">
+      <li *ngFor="let meeting of roomDetails.scheduledMeetings">
+         {{meeting.id}}
+         {{meeting.startTime}}
+         {{meeting.endTime}}
+         {{meeting.agenda}}
+         {{meeting.bookedBy}}
+      </li>
+    </ul>
+</div>
+
+
