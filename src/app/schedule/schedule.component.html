@@ -1,41 +1,60 @@
-<!-- <div class="roomDiv">
-  <p>{{roomDetails.id}}</p>
-  <p>{{roomDetails.name}}</p>
-  <p>Status: {{roomDetails.status}}</p>
-</div> -->
-<div style="height:100%;width:100%;display: inline-block;">
-  <h1 style="width:50%">
+<div style="width:100%">
+  <h1>
     Schedule your meeting
   </h1>
+  <div style="width:100%">
+    <label class="form-control" for="rooms">Select a Room: </label> <br/>
+    <select class="form-control" id="rooms" name="roomslist" (change)="onRoomChange($event.target.value)" form="meetingForm">
+      <option [value]=""></option>
+      <option *ngFor="let room of rooms" [value]="room.id">{{room.name}}</option>
+    </select>
+    <div>
+<div>
+    <form #f="ngForm" id="meetingForm" ngNativeValidate (ngSubmit)="scheduleMeeting(f)">
+      <p class="form-control" *ngIf="meetingTo.dirty && meetingTo.invalid">
+        endTime is required!
+      </p>
+      <p class="form-control" *ngIf="meetingFromTime.dirty && meetingFromTime.invalid">
+        startTime is required!
+      </p>
+      <p class="form-control" *ngIf="roomDetails && roomDetails.name">
+        Room : {{roomDetails.name}} is {{status}}
+      </p>
 
-  <form #f="ngForm" ngNativeValidate (ngSubmit)="scheduleMeeting()">
-    <p *ngIf="meetingTo.dirty && meetingTo.invalid">
-      endTime is required!
-    </p>
-    <p *ngIf="meetingFromTime.dirty && meetingFromTime.invalid">
-      startTime  is required!
-    </p>
-    Start Time: <input type="datetime-local" required minlength="5" #meetingFromTime="ngModel" [(ngModel)]="meetingDetails.startTime" name="ptitle" class="form-control" />
-    End Time: <input type="datetime-local" required #meetingTo="ngModel" name="price" [(ngModel)]="meetingDetails.endTime" class="form-control" />
-    Agenda: <input type="text"  #meetingToTime="ngModel" name="rating" [(ngModel)]="meetingDetails.agenda" class="form-control" />
-    Booked By: <input type="text" required #meetingToTime="ngModel" name="likes" [(ngModel)]="meetingDetails.bookedBy" class="form-control" />
-    <br/>
-    <button [disabled]="f.invalid" class="btn btn-success btn-lg"> Schedule </button>
-  </form>
-  
-    
-    <h1>
-      Scheduled meetings
-    </h1>
-    <ul *ngIf="roomDetails">
-      <li *ngFor="let meeting of roomDetails.scheduledMeetings">
-         {{meeting.id}}
-         {{meeting.startTime}}
-         {{meeting.endTime}}
-         {{meeting.agenda}}
-         {{meeting.bookedBy}}
-      </li>
-    </ul>
+       <span class="form-control">Start Time:</span><br/>
+       <input type="datetime-local" required minlength="5" #meetingFromTime="ngModel"
+        [(ngModel)]="meetingDetails.startTime" (ngModelChange)="onTimeChange($event)" name="ptitle"
+        class="form-control" /> <br/>
+        <span class="form-control"> End Time: </span><br/>
+        <input type="datetime-local" required #meetingTo="ngModel" name="price"
+        [(ngModel)]="meetingDetails.endTime" (ngModelChange)="onTimeChange($event)" class="form-control" /><br/>
+        <span class="form-control">Agenda:</span><br/>
+         <input type="text" #meetingToTime="ngModel" name="rating" [(ngModel)]="meetingDetails.agenda"
+        class="form-control" /><br/>
+        <span class="form-control">By:</span><br/>
+         <input type="text" required #meetingToTime="ngModel" name="likes" [(ngModel)]="meetingDetails.bookedBy"
+        class="form-control" /><br/>
+      <br />
+      <button [disabled]="f.invalid && status === 'Booked'" class="btn btn-success btn-lg"> Schedule </button>
+    </form>
+  </div>
+
+  <h1>
+    Scheduled meetings
+  </h1>
+  <table *ngIf="roomDetails" style="width:100%">
+    <tr>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Agenda</th>
+      <th>Booked By</th>
+    </tr>
+    <tr *ngFor="let meeting of roomDetails.scheduledMeetings">
+      <td>{{meeting.startTime}}</td>
+      <td>{{meeting.endTime}}</td>
+      <td>{{meeting.agenda}}</td>
+      <td>{{meeting.bookedBy}}</td>
+      <td><button (click)="deleteMeeting(meeting.id)">Delete</button></td>
+    </tr>
+  </table>
 </div>
-
-

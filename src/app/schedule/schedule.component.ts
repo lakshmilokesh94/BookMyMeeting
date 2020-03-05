@@ -10,17 +10,35 @@ import { DataService } from '../data.service';
 export class ScheduleComponent implements OnInit {
 
   constructor(public dataService: DataService, public currentRoute: ActivatedRoute) { }
-
-  roomDetails: any;
-  meetingDetails: any = { id: '',startTime: '', endTime: '', agenda:'', bookedBy:''}
+  rooms: any = [];
+  roomDetails: any = {};
+  status: string = '';
+  meetingDetails: any = { id: '', startTime: '', endTime: '', agenda: '', bookedBy: '' }
   ngOnInit() {
-    this.currentRoute.params.subscribe(p => {
-      this.roomDetails = this.dataService.getRoomDetails(p.id);
-    });
+    this.rooms = this.dataService.getAllRooms();
   }
 
-  scheduleMeeting() {
-    this.dataService.scheduleMeeting(this.roomDetails.id, this.meetingDetails)
+  onRoomChange(roomId) {
+    this.roomDetails = this.dataService.getRoomDetails(roomId);
+    this.status = this.dataService.getRoomStatus(roomId,this.meetingDetails.startTime);
+  }
+
+  onTimeChange(time) {
+    this.status = this.dataService.getRoomStatus(this.roomDetails.id,time);
+  }
+
+  scheduleMeeting(theForm) {
+    if(this.status === 'Available'){
+      this.dataService.scheduleMeeting(this.roomDetails.id, this.meetingDetails);
+      theForm.reset();
+      this.roomDetails = this.dataService.getRoomDetails(this.roomDetails.id);
+    }
+  }
+
+  deleteMeeting(meetingId:string){
+    this.dataService.deleteMeeting(this.roomDetails.id,meetingId);
+    this.roomDetails = this.dataService.getRoomDetails(this.roomDetails.id);
+    this.status = this.dataService.getRoomStatus(this.roomDetails.id,this.meetingDetails.startTime);
   }
 
 }
