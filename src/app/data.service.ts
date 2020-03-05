@@ -49,27 +49,41 @@ export class DataService {
 
   getRoomDetails(roomId: string) {
     let currentRoom = this.rooms.filter(room => { return room.id === roomId; });
-    return currentRoom.length ? currentRoom[0] : {};
+    currentRoom = currentRoom.length ? currentRoom[0] : {};
+    return JSON.parse(JSON.stringify(currentRoom));
   }
 
-  private isAvailable(roomId: string, meetingDetails: any) {
-    return true;
+  private isValid(meetingDetails: any) {
+    let startTime = new Date(meetingDetails.startTime);
+    let endTime = new Date(meetingDetails.endTime);
+    return startTime < endTime;
+
   }
 
   scheduleMeeting(roomId: string, meetingDetails: any) {
+    meetingDetails = JSON.parse(JSON.stringify(meetingDetails));
     //meetingdetails has id, username ,date, time to and fro, agenda
-    if (this.isAvailable(roomId, meetingDetails)) {
+    if (this.isValid(meetingDetails)) {
       let index = this.rooms.findIndex(p => p.id === roomId);
       meetingDetails.id = this.rooms[index].scheduledMeetings.length + 1;
       this.rooms[index].scheduledMeetings.push(meetingDetails);
     }
   }
 
-  changeStatus(roomId: string, meetingDetails: any) {
-
+  getRoomStatus(roomId: string, time: string) {
+    let selectedTime = new Date(time);
+    let index = this.rooms.findIndex(p => p.id === roomId);
+    let meeting = this.rooms[index].scheduledMeetings.filter(meeting => {
+      let startTime = new Date(meeting.startTime);
+      let endTime = new Date(meeting.endTime);
+      return startTime <= selectedTime && selectedTime <= endTime;
+    });
+    return meeting && meeting.length ? 'Booked' : 'Available';
   }
 
   deleteMeeting(roomId: string, meetingId: string) {
-
+    let index = this.rooms.findIndex(p => p.id === roomId);
+    let meetingIndex = this.rooms[index].scheduledMeetings.findIndex(i => i.id === meetingId);
+    this.rooms[index].scheduledMeetings.splice(meetingIndex,1);
   }
 }
