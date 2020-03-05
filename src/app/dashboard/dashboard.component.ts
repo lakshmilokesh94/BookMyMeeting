@@ -15,7 +15,7 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/room',{ id: roomId }]);
   }
   ngOnInit() {
-    this.rooms = this.dataSvc.getAllRooms()
+    this.rooms = this.dataSvc.getAllRooms();
   }
 
 }
